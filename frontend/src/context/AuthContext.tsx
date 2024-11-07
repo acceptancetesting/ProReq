@@ -1,4 +1,7 @@
+// src/context/AuthContext.tsx
+
 import React, { createContext, useState, useEffect, ReactNode } from "react";
+import jwtDecode from "jwt-decode";
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -19,7 +22,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    setAuthenticated(!!token);
+    if (token) {
+      // Optionally, verify token validity
+      setAuthenticated(true);
+    }
   }, []);
 
   return (
