@@ -2,36 +2,34 @@
 
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UserProjectRolesService } from '../user-project-roles/user-project-roles.service';
+import { JwtService } from '@nestjs/jwt';
+import { ROLES_KEY } from './roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private uprService: UserProjectRolesService,
+    private jwtService: JwtService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles = this.reflector.get<string[]>(
-      'roles',
-      context.getHandler(),
+  canActivate(context: ExecutionContext): boolean {
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
     );
     if (!requiredRoles) {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
-    const projectId = parseInt(request.params.projectId, 10); // Assuming projectId is in route params
-
-    const userProjectRole = await this.uprService.getUserRoleInProject(
-      user.userId,
-      projectId,
-    );
-
-    if (!userProjectRole) {
+    const authHeader = request.headers.authorization;
+    if (!authHeader) {
       return false;
     }
-
-    return requiredRoles.includes(userProjectRole.role.name);
+    const token = authHeader.split(' ')[1];
+    const user = this.jwtService.decode(token) as any;
+    const userRoles = user.roles || [];
+    return requiredRoles.some((role) =>
+      userRoles.some((userRole) => userRole.roleName === role),
+    );
   }
 }

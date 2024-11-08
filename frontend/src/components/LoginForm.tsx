@@ -4,8 +4,9 @@ import React, { useState, useContext } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { TextField, Button, Container, Typography } from "@mui/material";
-
+import { Container, Typography } from "@mui/material";
+import Button from "./Button";
+import Input from "./Input";
 const LoginForm: React.FC = () => {
   const { setAuthenticated } = useContext(AuthContext);
   const [email, setEmail] = useState("");
@@ -34,25 +35,27 @@ const LoginForm: React.FC = () => {
         Login
       </Typography>
       <form onSubmit={handleSubmit}>
-        <TextField
+        <Input
           label="Email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          fullWidth
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
           margin="normal"
           required
         />
-        <TextField
+        <Input
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          fullWidth
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
           margin="normal"
           required
         />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
+        <Button type="submit" fullWidth>
           Login
         </Button>
       </form>
