@@ -22,7 +22,7 @@ import { UserProjectRolesModule } from './user-project-roles/user-project-roles.
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: true, //Should be false for production
       }),
       inject: [ConfigService],
     }),
