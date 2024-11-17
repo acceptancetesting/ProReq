@@ -8,6 +8,7 @@ import {
   Param,
   UseGuards,
   ParseIntPipe,
+  Req,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -25,7 +26,7 @@ export class ProjectsController {
    * Endpoint: GET /projects
    * @returns An array of projects.
    */
-  @Get()
+  @Get('all')
   @Roles('Admin', 'Project Manager')
   async findAll() {
     // Since there's no projectId, we need to decide how to handle this.
@@ -34,6 +35,12 @@ export class ProjectsController {
     return this.projectsService.findAll();
   }
 
+  @Get()
+  @Roles('Admin', 'Project Manager', 'User') // Adjust roles as needed
+  async findAllForUser(@Req() req) {
+    const userId = req.user.id; // Extract userId from the request (JwtAuthGuard adds this)
+    return this.projectsService.findAllForUser(userId);
+  }
   /**
    * Retrieves a single project by ID.
    * Endpoint: GET /projects/:projectId

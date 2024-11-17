@@ -1,25 +1,42 @@
 // src/requirements/dto/create-requirement.dto.ts
 
-import { IsNotEmpty, IsOptional, IsString, IsNumber } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+class RelationshipDto {
+  @IsInt()
+  targetId: number;
+
+  @IsString()
+  @IsNotEmpty()
+  type: string; // Relationship type: e.g., "Parent-Child", "Dependency"
+}
 
 export class CreateRequirementDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   title: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   description: string;
 
-  @IsOptional()
   @IsString()
-  status?: string;
-
-  @IsOptional()
-  @IsString()
-  priority?: string;
-
   @IsNotEmpty()
-  @IsNumber()
-  projectId: number; // Ensure this is included
+  type: string;
+
+  @IsString()
+  @IsNotEmpty()
+  status: string;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => RelationshipDto)
+  relationships?: RelationshipDto[];
 }

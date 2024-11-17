@@ -36,7 +36,7 @@ const CreateTicket: React.FC = () => {
   const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/tickets", {
+      await axiosInstance.post(`/projects/${projectId}/tickets`, {
         projectId,
         title,
         description,

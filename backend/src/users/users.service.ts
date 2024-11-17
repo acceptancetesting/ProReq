@@ -23,6 +23,8 @@ export class UsersService {
       password: hashedPassword,
       name,
     });
+    console.log('User created with hashed password:', user.password);
+
     return this.usersRepository.save(user);
   }
   async findOneByEmail(email: string): Promise<User | undefined> {

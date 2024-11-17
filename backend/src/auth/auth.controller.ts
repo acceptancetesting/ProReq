@@ -12,7 +12,9 @@ import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {
+    console.log('AuthController initialized'); // This should print on server start
+  }
 
   /**
    * Handles user login.
@@ -23,6 +25,7 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true })) // Validates and strips unknown properties
   async login(@Body() loginDto: LoginDto) {
+    console.log('AuthController: login endpoint hit with data:', loginDto); // Check if this logs
     return this.authService.login(loginDto);
   }
 }

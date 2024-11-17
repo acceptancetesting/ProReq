@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Requirement } from './entities/requirement.entity';
 import { Project } from '../projects/entities/project.entity';
+import { RequirementRelationshipService } from '../requirementrelations/requirementRelationship.service';
 
 @Injectable()
 export class RequirementsService {
@@ -15,6 +16,7 @@ export class RequirementsService {
     private requirementsRepository: Repository<Requirement>,
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
+    private readonly relationshipService: RequirementRelationshipService,
   ) {}
 
   async create(
@@ -29,12 +31,30 @@ export class RequirementsService {
       throw new NotFoundException('Project not found');
     }
 
+    const { relationships, ...requirementData } = createRequirementDto;
+
+    // Create the requirement
     const requirement = this.requirementsRepository.create({
-      ...createRequirementDto,
+      ...requirementData,
       project,
     });
 
-    return this.requirementsRepository.save(requirement);
+    const savedRequirement =
+      await this.requirementsRepository.save(requirement);
+
+    // Handle relationships if provided
+    if (relationships && relationships.length > 0) {
+      const relationshipEntities = relationships.map((rel) =>
+        this.relationshipService.createRelationship(
+          savedRequirement.id,
+          rel.targetId,
+          rel.type,
+        ),
+      );
+      await Promise.all(relationshipEntities); // Ensure all relationships are saved
+    }
+
+    return savedRequirement;
   }
 
   async findAll(projectId: number): Promise<Requirement[]> {
@@ -70,5 +90,14 @@ export class RequirementsService {
   async remove(projectId: number, id: number): Promise<void> {
     const requirement = await this.findOne(projectId, id);
     await this.requirementsRepository.remove(requirement);
+  }
+
+  async findRequirementWithRelationships(id: number) {
+    const requirement = await this.requirementsRepository.findOneBy({ id });
+    if (!requirement) throw new Error('Requirement not found');
+
+    const relationships =
+      await this.relationshipService.findRelationshipsForRequirement(id);
+    return { ...requirement, relationships };
   }
 }

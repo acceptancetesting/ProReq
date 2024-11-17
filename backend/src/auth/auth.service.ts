@@ -13,8 +13,8 @@ export class AuthService {
 
   async validateUser(email: string, password1: string): Promise<any> {
     console.log('AuthService: Validating user with email:', email);
-
     const user = await this.usersService.findOneByEmail(email);
+
     if (!user) {
       console.log('AuthService: User not found');
       throw new UnauthorizedException('Invalid credentials');

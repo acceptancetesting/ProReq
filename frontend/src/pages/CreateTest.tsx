@@ -35,7 +35,7 @@ const CreateTest: React.FC = () => {
   const handleCreateTest = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axiosInstance.post("/tests", {
+      await axiosInstance.post(`/projects/${projectId}/tests`, {
         projectId,
         title,
         description,

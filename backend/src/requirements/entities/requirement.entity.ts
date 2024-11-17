@@ -1,5 +1,3 @@
-// src/requirements/entities/requirement.entity.ts
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,6 +10,7 @@ import {
 import { Project } from '../../projects/entities/project.entity';
 import { Comment } from '../../comments/entities/comment.entity';
 import { Tag } from '../../tags/entities/tag.entity';
+import { RequirementRelationship } from '../../requirementrelations/entities/requirementRelationship.entity';
 
 @Entity()
 export class Requirement {
@@ -25,10 +24,10 @@ export class Requirement {
   description: string;
 
   @Column({ default: 'New' })
-  status: string; // Consider using enums
+  status: string;
 
   @Column({ default: 'Medium' })
-  priority: string; // Consider using enums
+  priority: string;
 
   @ManyToOne(() => Project, (project) => project.requirements, {
     onDelete: 'CASCADE',
@@ -41,4 +40,18 @@ export class Requirement {
   @ManyToMany(() => Tag, (tag) => tag.requirements, { cascade: true })
   @JoinTable()
   tags: Tag[];
+
+  @OneToMany(
+    () => RequirementRelationship,
+    (relationship) => relationship.sourceRequirement,
+    { cascade: true },
+  )
+  sourceRelationships: RequirementRelationship[];
+
+  @OneToMany(
+    () => RequirementRelationship,
+    (relationship) => relationship.targetRequirement,
+    { cascade: true },
+  )
+  targetRelationships: RequirementRelationship[];
 }

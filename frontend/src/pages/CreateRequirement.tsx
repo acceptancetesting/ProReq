@@ -1,6 +1,4 @@
-// src/pages/CreateRequirement.tsx
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import AppLayout from "../components/AppLayout";
 import styled from "styled-components";
@@ -37,24 +35,63 @@ const Select = styled.select`
   }
 `;
 
+interface CreateRequirementPayload {
+  projectId: string | undefined;
+  title: string;
+  description: string;
+  type: "Epic" | "Story" | "Task";
+  status: string;
+  relationships?: { targetId: string; type: string }[];
+}
+
 const CreateRequirement: React.FC = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<"Epic" | "Story" | "Task">("Epic");
   const [status, setStatus] = useState("Open");
+  const [relatedRequirement, setRelatedRequirement] = useState("");
+  const [relationshipType, setRelationshipType] = useState("Dependency");
+  const [existingRequirements, setExistingRequirements] = useState([]);
   const navigate = useNavigate();
+
+  // Fetch existing requirements for the dropdown
+  useEffect(() => {
+    const fetchRequirements = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/projects/${projectId}/requirements`
+        );
+        setExistingRequirements(response.data);
+      } catch (err) {
+        console.error("Failed to fetch requirements", err);
+      }
+    };
+    fetchRequirements();
+  }, [projectId]);
 
   const handleCreateRequirement = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const payload: CreateRequirementPayload = {
+      projectId,
+      title,
+      description,
+      type,
+      status,
+    };
+
+    if (relatedRequirement) {
+      payload.relationships = [
+        {
+          targetId: relatedRequirement,
+          type: relationshipType,
+        },
+      ];
+    }
+
     try {
-      await axiosInstance.post("/projects/${projectId}/requirements", {
-        projectId,
-        title,
-        description,
-        type,
-        status,
-      });
+      await axiosInstance.post(`/projects/${projectId}/requirements`, payload);
       navigate(`/projects/${projectId}/requirements`);
     } catch (err) {
       console.error("Failed to create requirement", err);
@@ -102,6 +139,32 @@ const CreateRequirement: React.FC = () => {
             <option value="Open">Open</option>
             <option value="In Progress">In Progress</option>
             <option value="Completed">Completed</option>
+          </Select>
+        </FormGroup>
+        <FormGroup>
+          <Label>Related Requirement (Optional)</Label>
+          <Select
+            value={relatedRequirement}
+            onChange={(e) => setRelatedRequirement(e.target.value)}
+          >
+            <option value="">None</option>
+            {existingRequirements.map((req: any) => (
+              <option key={req.id} value={req.id}>
+                {req.title}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
+        <FormGroup>
+          <Label>Relationship Type</Label>
+          <Select
+            value={relationshipType}
+            onChange={(e) => setRelationshipType(e.target.value)}
+            disabled={!relatedRequirement} // Disable if no related requirement selected
+          >
+            <option value="Dependency">Dependency</option>
+            <option value="Parent-Child">Parent-Child</option>
+            <option value="Relates To">Relates To</option>
           </Select>
         </FormGroup>
         <Button type="submit" primary space="requirements" size="medium">
