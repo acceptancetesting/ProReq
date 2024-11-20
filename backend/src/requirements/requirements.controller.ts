@@ -17,11 +17,15 @@ import { UpdateRequirementDto } from './dto/update-requirement.dto';
 import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { BaselineService } from '../common/services/baseline.service';
 
 @Controller('projects/:projectId/requirements')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RequirementsController {
-  constructor(private readonly requirementsService: RequirementsService) {}
+  constructor(
+    private readonly requirementsService: RequirementsService,
+    private readonly baselineService: BaselineService, // Inject BaselineService
+  ) {}
 
   /**
    * Creates a new requirement for a project.
@@ -71,6 +75,17 @@ export class RequirementsController {
     @Body() updateRequirementDto: UpdateRequirementDto,
   ) {
     return this.requirementsService.update(projectId, id, updateRequirementDto);
+  }
+
+  @Post('baseline')
+  async createBaseline(
+    @Body()
+    body: {
+      name: string;
+      entities: { entityType: string; entityId: number }[];
+    },
+  ) {
+    return this.baselineService.createBaseline(body.name, body.entities);
   }
 
   /**

@@ -1,5 +1,3 @@
-// src/tickets/tickets.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -7,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Ticket } from './entities/ticket.entity';
 import { Project } from '../projects/entities/project.entity';
+import { VersionService } from '../common/services/version.service'; // Add this
 
 @Injectable()
 export class TicketsService {
@@ -15,6 +14,7 @@ export class TicketsService {
     private ticketsRepository: Repository<Ticket>,
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
+    private readonly versionService: VersionService, // Inject VersionService
   ) {}
 
   async create(
@@ -62,6 +62,10 @@ export class TicketsService {
     updateTicketDto: UpdateTicketDto,
   ): Promise<Ticket> {
     const ticket = await this.findOne(projectId, id);
+
+    // Create a version before updating the ticket
+    await this.versionService.createVersion('Ticket', id, updateTicketDto);
+
     Object.assign(ticket, updateTicketDto);
     return this.ticketsRepository.save(ticket);
   }

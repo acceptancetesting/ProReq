@@ -64,17 +64,10 @@ const TestsList: React.FC = () => {
         <FaPlus /> Add Test
       </AddTestsButton>
       {Tests.map((test) => (
-        <TestsCard key={test.id}>
+        <TestsCard key={test.id} to={`/projects/${projectId}/tests/${test.id}`}>
           <TestsTitle>{test.title}</TestsTitle>
           <p>Priority: {test.priority}</p>
           <p>Status: {test.status}</p>
-          <Button
-            as={Link}
-            to={`/projects/${projectId}/tests/${test.id}`}
-            space="tests"
-          >
-            View Details
-          </Button>
         </TestsCard>
       ))}
     </TestsContainer>

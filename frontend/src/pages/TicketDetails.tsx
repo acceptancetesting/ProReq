@@ -59,35 +59,10 @@ const TicketDetails: React.FC = () => {
     <AppLayout>
       <Breadcrumbs />
       <TicketHeader>{ticket.title}</TicketHeader>
-      <TicketDetailsCard>
+      <TicketDetailsCard to={`/projects/${projectId}/tickets/${ticketId}`}>
         <p>
           <strong>Priority:</strong> {ticket.priority}
         </p>
-        <p>
-          <strong>Status:</strong> {ticket.status}
-        </p>
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <p>{ticket.description}</p>
-        <EditButton
-          primary
-          space="tickets"
-          size="small"
-          onClick={() =>
-            navigate(`/projects/${projectId}/tickets/${ticketId}/edit`)
-          }
-        >
-          Edit Ticket
-        </EditButton>
-        <Button
-          primary
-          space="tickets"
-          size="small"
-          onClick={() => navigate(`/projects/${projectId}/tickets`)}
-        >
-          Back to Tickets
-        </Button>
       </TicketDetailsCard>
     </AppLayout>
   );

@@ -17,11 +17,15 @@ import { UpdateTestDto } from './dto/update-test.dto';
 import { Roles } from '../auth/roles.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { BaselineService } from '../common/services/baseline.service';
 
 @Controller('projects/:projectId/tests')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TestsController {
-  constructor(private readonly testsService: TestsService) {}
+  constructor(
+    private readonly testsService: TestsService,
+    private readonly baselineService: BaselineService, // Inject BaselineService
+  ) {}
 
   @Post()
   @Roles('Admin', 'Project Manager')
@@ -55,6 +59,17 @@ export class TestsController {
     @Body() updateTestDto: UpdateTestDto,
   ) {
     return this.testsService.update(projectId, id, updateTestDto);
+  }
+
+  @Post('baseline')
+  async createBaseline(
+    @Body()
+    body: {
+      name: string;
+      entities: { entityType: string; entityId: number }[];
+    },
+  ) {
+    return this.baselineService.createBaseline(body.name, body.entities);
   }
 
   @Delete(':id')

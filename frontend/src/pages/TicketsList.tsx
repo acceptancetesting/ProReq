@@ -64,17 +64,13 @@ const TicketsList: React.FC = () => {
         <FaPlus /> Add Ticket
       </AddTicketButton>
       {tickets.map((ticket) => (
-        <TicketCard key={ticket.id}>
+        <TicketCard
+          key={ticket.id}
+          to={`/projects/${projectId}/tickets/${ticket.id}`}
+        >
           <TicketTitle>{ticket.title}</TicketTitle>
           <p>Priority: {ticket.priority}</p>
           <p>Status: {ticket.status}</p>
-          <Button
-            as={Link}
-            to={`/projects/${projectId}/tickets/${ticket.id}`}
-            space="tickets"
-          >
-            View Details
-          </Button>
         </TicketCard>
       ))}
     </TicketsContainer>

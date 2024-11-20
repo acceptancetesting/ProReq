@@ -9,14 +9,32 @@ import { Project } from '../projects/entities/project.entity';
 import { UserProjectRolesModule } from '../user-project-roles/user-project-roles.module'; // Import the module
 import { RequirementRelationshipModule } from '../requirementrelations/requirementRelationship.module'; // Import the module
 import { RequirementRelationship } from '../requirementrelations/entities/requirementRelationship.entity'; // Import the module
+import { Version } from 'src/common/entities/version.entity';
+import { Baseline } from 'src/common/entities/baseline.entity';
+import { Release } from 'src/common/entities/release.entity';
+import { VersionService } from 'src/common/services/version.service';
+import { BaselineService } from 'src/common/services/baseline.service';
+import { ReleaseService } from 'src/common/services/release.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Requirement, Project, RequirementRelationship]),
-    UserProjectRolesModule, // Import the module here
-    RequirementRelationshipModule, // Import relationship module
+    TypeOrmModule.forFeature([
+      Requirement,
+      Project,
+      RequirementRelationship,
+      Version,
+      Baseline,
+      Release,
+    ]), // Combine all TypeOrm entities
+    UserProjectRolesModule, // Import project roles module
+    RequirementRelationshipModule, // Import relationships module
   ],
   controllers: [RequirementsController],
-  providers: [RequirementsService],
+  providers: [
+    RequirementsService,
+    VersionService,
+    BaselineService,
+    ReleaseService,
+  ],
 })
 export class RequirementsModule {}

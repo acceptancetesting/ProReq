@@ -12,8 +12,9 @@ import { RequirementsModule } from './requirements/requirements.module';
 import { TagsModule } from './tags/tags.module';
 import { CommentsModule } from './comments/comments.module';
 import { SharedModule } from './shared/shared.module';
-import { TestsModule } from './tests/tests.module';
 import { TicketsModule } from './tickets/tickets.module';
+import { TestsModule } from './tests/tests.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { TicketsModule } from './tickets/tickets.module';
     SharedModule,
     TestsModule,
     TicketsModule,
+    CommonModule,
   ],
 })
 export class AppModule {}

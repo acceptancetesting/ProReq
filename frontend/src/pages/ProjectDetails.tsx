@@ -81,15 +81,13 @@ const ProjectDetails: React.FC = () => {
         <Tab to={`/projects/${projectId}/tickets`}>Tickets</Tab>
         <Tab to={`/projects/${projectId}/tests`}>Tests</Tab>
       </Tabs>
-      <OverviewCard>
+      <OverviewCard to={`/projects/${projectId}/overview`}>
         <p>{project.description}</p>
         {/* Additional project details can be added here */}
         <Button
-          primary
+          as={Link}
+          to={`/projects/${projectId}/details`}
           space="projects"
-          size="medium"
-          onClick={() => navigate(`/projects/${projectId}/requirements/create`)}
-          style={{ marginRight: "10px" }}
         >
           <FaPlus /> Add Requirement
         </Button>

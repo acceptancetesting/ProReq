@@ -34,6 +34,8 @@ interface Requirement {
 }
 
 const RequirementsList: React.FC = () => {
+  console.log("Rendering RequirementsList");
+
   const { projectId } = useParams<{ projectId: string }>();
   const [requirements, setRequirements] = useState<Requirement[]>([]);
 
@@ -64,17 +66,13 @@ const RequirementsList: React.FC = () => {
         <FaPlus /> Add Requirement
       </AddRequirementButton>
       {requirements.map((req) => (
-        <RequirementCard key={req.id}>
+        <RequirementCard
+          key={req.id}
+          to={`/projects/${projectId}/requirements/${req.id}`}
+        >
           <RequirementTitle>{req.title}</RequirementTitle>
           <p>Type: {req.type}</p>
           <p>Status: {req.status}</p>
-          <Button
-            as={Link}
-            to={`/projects/${projectId}/requirements/${req.id}`}
-            space="requirements"
-          >
-            View Details
-          </Button>
         </RequirementCard>
       ))}
     </RequirementsContainer>

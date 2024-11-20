@@ -14,6 +14,9 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaSpaceShuttle,
+  FaClock,
+  FaCodeBranch,
+  FaTag,
 } from "react-icons/fa";
 import axiosInstance from "../api/axios";
 
@@ -190,6 +193,24 @@ const SideNav: React.FC = () => {
                   <StyledNavLink to={`/projects/${project.id}/tests`}>
                     <FaVial />
                     Tests
+                  </StyledNavLink>
+                </SubNavItem>
+                <SubNavItem>
+                  <StyledNavLink to={`/projects/${project.id}/baselines`}>
+                    <FaClock />
+                    Baselines
+                  </StyledNavLink>
+                </SubNavItem>
+                <SubNavItem>
+                  <StyledNavLink to={`/projects/${project.id}/versions`}>
+                    <FaCodeBranch />
+                    Versions
+                  </StyledNavLink>
+                </SubNavItem>
+                <SubNavItem>
+                  <StyledNavLink to={`/projects/${project.id}/releases`}>
+                    <FaTag />
+                    Releases
                   </StyledNavLink>
                 </SubNavItem>
               </SubNavList>

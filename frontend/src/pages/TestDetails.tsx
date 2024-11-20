@@ -58,32 +58,10 @@ const TestDetails: React.FC = () => {
     <AppLayout>
       <Breadcrumbs />
       <TestHeader>{test.title}</TestHeader>
-      <TestDetailsCard>
+      <TestDetailsCard to={`/projects/${projectId}/tests/${testId}`}>
         <p>
           <strong>Status:</strong> {test.status}
         </p>
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <p>{test.description}</p>
-        <EditButton
-          primary
-          space="tests"
-          size="small"
-          onClick={() =>
-            navigate(`/projects/${projectId}/tests/${testId}/edit`)
-          }
-        >
-          Edit Test
-        </EditButton>
-        <Button
-          primary
-          space="tests"
-          size="small"
-          onClick={() => navigate(`/projects/${projectId}/tests`)}
-        >
-          Back to Tests
-        </Button>
       </TestDetailsCard>
     </AppLayout>
   );

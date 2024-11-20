@@ -59,38 +59,17 @@ const RequirementDetails: React.FC = () => {
     <AppLayout>
       <Breadcrumbs />
       <RequirementHeader>{requirement.title}</RequirementHeader>
-      <RequirementDetailsCard>
+      <RequirementDetailsCard
+        to={`/projects/${projectId}/requirements/${requirementId}`}
+      >
         <p>
           <strong>Type:</strong> {requirement.type}
         </p>
         <p>
           <strong>Status:</strong> {requirement.status}
         </p>
-        <p>
-          <strong>Description:</strong>
-        </p>
-        <p>{requirement.description}</p>
-        <EditButton
-          primary
-          space="requirements"
-          size="small"
-          onClick={() =>
-            navigate(
-              `/projects/${projectId}/requirements/${requirementId}/edit`
-            )
-          }
-        >
-          Edit Requirement
-        </EditButton>
-        <Button
-          primary
-          space="requirements"
-          size="small"
-          onClick={() => navigate(`/projects/${projectId}/requirements`)}
-        >
-          Back to Requirements
-        </Button>
       </RequirementDetailsCard>
+
       {/* Additional sections like Comments, Tags can be added here */}
     </AppLayout>
   );

@@ -1,5 +1,3 @@
-// src/tests/tests.service.ts
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
@@ -7,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Test } from './entities/test.entity';
 import { Project } from '../projects/entities/project.entity';
+import { VersionService } from '../common/services/version.service'; // Add this
 
 @Injectable()
 export class TestsService {
@@ -15,6 +14,7 @@ export class TestsService {
     private testsRepository: Repository<Test>,
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
+    private readonly versionService: VersionService, // Inject VersionService
   ) {}
 
   async create(projectId: number, createTestDto: CreateTestDto): Promise<Test> {
@@ -59,6 +59,10 @@ export class TestsService {
     updateTestDto: UpdateTestDto,
   ): Promise<Test> {
     const test = await this.findOne(projectId, id);
+
+    // Create a version before updating the test
+    await this.versionService.createVersion('Test', id, updateTestDto);
+
     Object.assign(test, updateTestDto);
     return this.testsRepository.save(test);
   }

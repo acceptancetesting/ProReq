@@ -62,12 +62,9 @@ const ProjectList: React.FC = () => {
         + New Project
       </AddProjectButton>
       {projects.map((project) => (
-        <ProjectCard key={project.id}>
+        <ProjectCard key={project.id} to={`/projects/${project.id}`}>
           <ProjectTitle>{project.name}</ProjectTitle>
           <ProjectDescription>{project.description}</ProjectDescription>
-          <Button as={Link} to={`/projects/${project.id}`} space="projects">
-            View Details
-          </Button>
         </ProjectCard>
       ))}
     </ProjectsContainer>

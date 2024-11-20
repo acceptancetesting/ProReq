@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Requirement } from './entities/requirement.entity';
 import { Project } from '../projects/entities/project.entity';
 import { RequirementRelationshipService } from '../requirementrelations/requirementRelationship.service';
+import { VersionService } from 'src/common/services/version.service';
 
 @Injectable()
 export class RequirementsService {
@@ -17,6 +18,7 @@ export class RequirementsService {
     @InjectRepository(Project)
     private projectsRepository: Repository<Project>,
     private readonly relationshipService: RequirementRelationshipService,
+    private readonly versionService: VersionService,
   ) {}
 
   async create(
@@ -83,6 +85,14 @@ export class RequirementsService {
     updateRequirementDto: UpdateRequirementDto,
   ): Promise<Requirement> {
     const requirement = await this.findOne(projectId, id);
+
+    // Create a version
+    await this.versionService.createVersion(
+      'Requirement',
+      id,
+      updateRequirementDto,
+    );
+
     Object.assign(requirement, updateRequirementDto);
     return this.requirementsRepository.save(requirement);
   }
